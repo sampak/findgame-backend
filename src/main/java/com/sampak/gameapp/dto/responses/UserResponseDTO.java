@@ -8,4 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class UserResponseDTO {
+    String id;
+    String login;
+    String email;
 }
