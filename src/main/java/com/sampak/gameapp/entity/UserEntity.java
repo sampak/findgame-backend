@@ -1,5 +1,6 @@
 package com.sampak.gameapp.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
@@ -31,7 +32,7 @@ public class UserEntity implements UserDetails {
     @Column()
     private String password;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "user_games",
             joinColumns = @JoinColumn(name = "user_id"),

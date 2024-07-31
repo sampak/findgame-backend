@@ -1,5 +1,6 @@
 package com.sampak.gameapp.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,8 +26,11 @@ public class GameEntity {
     private UUID id;
 
     @Column(nullable = false, unique = true)
+    private Number appId;
+
+    @Column(nullable = false, unique = false)
     private String name;
 
-    @ManyToMany(mappedBy = "games")
+    @ManyToMany(mappedBy = "games", fetch = FetchType.LAZY)
     private Set<UserEntity> users = new HashSet<>();
 }
