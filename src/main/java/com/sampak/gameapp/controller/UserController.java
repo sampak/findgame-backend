@@ -63,13 +63,7 @@ public class UserController {
     public Set<GamesResponseDTO> getGames() {
         UserEntity user = currentUserProvider.getCurrentUserEntity();
         return user.getGames().stream()
-                .map(game -> new GamesResponseDTO(game.getId(), game.getName()))
+                .map(game -> new GamesResponseDTO(game.getId(), game.getAppId(), game.getName()))
                 .collect(Collectors.toSet());
-    }
-
-
-    @GetMapping("/steam")
-    public void getSteam() {
-        System.out.println(steamService.getSteamId("sampak"));
     }
 }

@@ -26,7 +26,7 @@ public class GameEntity {
     private UUID id;
 
     @Column(nullable = false, unique = true)
-    private Number appId;
+    private String appId;
 
     @Column(nullable = false, unique = false)
     private String name;

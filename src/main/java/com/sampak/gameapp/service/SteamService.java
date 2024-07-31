@@ -39,7 +39,7 @@ public class SteamService {
             if(gamesNode.isArray()) {
                 for(JsonNode gameNode : gamesNode) {
                     GameEntity game = new GameEntity();
-                    game.setAppId(gameNode.path("appid").asInt());
+                    game.setAppId(gameNode.path("appid").asText());
                     game.setName(gameNode.path("name").asText());
                     gamesList.add(game);
                 }
