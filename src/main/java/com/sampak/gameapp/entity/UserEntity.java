@@ -39,6 +39,9 @@ public class UserEntity implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "game_id"))
     private Set<GameEntity> games = new HashSet<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<FriendEntity> friends = new HashSet<>();
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of();
