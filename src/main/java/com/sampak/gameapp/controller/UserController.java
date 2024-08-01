@@ -1,5 +1,6 @@
 package com.sampak.gameapp.controller;
 
+import com.sampak.gameapp.dto.requests.ChangeSteamIdDTO;
 import com.sampak.gameapp.dto.requests.GamesResponseDTO;
 import com.sampak.gameapp.dto.requests.UserCreateRequestDTO;
 import com.sampak.gameapp.dto.requests.UserSignInRequestDTO;
@@ -11,6 +12,7 @@ import com.sampak.gameapp.providers.CurrentUserProvider.CurrentUserProvider;
 import com.sampak.gameapp.service.SteamService;
 import com.sampak.gameapp.service.UserService;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -48,9 +50,15 @@ public class UserController {
     }
 
     @PostMapping("")
-    public void create(@RequestBody UserCreateRequestDTO user) {
-        userService.create(mapToUser(user));
+    public TokenResponseDTO create(@Valid @RequestBody UserCreateRequestDTO user) {
+        return userService.create(mapToUser(user));
 
+    }
+
+    @PatchMapping("/steamid")
+    public void updateSteamId(@Valid @RequestBody ChangeSteamIdDTO changeSteamIdDTO) {
+        UserEntity user = currentUserProvider.getCurrentUserEntity();
+        userService.updateSteamId(user, changeSteamIdDTO);
     }
 
     @GetMapping("/me")

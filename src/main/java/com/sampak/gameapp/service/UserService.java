@@ -1,11 +1,14 @@
 package com.sampak.gameapp.service;
 
+import com.sampak.gameapp.dto.requests.ChangeSteamIdDTO;
 import com.sampak.gameapp.dto.requests.UserSignInRequestDTO;
 import com.sampak.gameapp.dto.responses.TokenResponseDTO;
 import com.sampak.gameapp.entity.UserEntity;
+import com.sampak.gameapp.exception.AppException;
 import com.sampak.gameapp.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -34,8 +37,20 @@ public class UserService {
 
     }
 
-    public void create(UserEntity user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+    public TokenResponseDTO create(UserEntity user) {
+        try {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            userRepository.save(user);
+            String token = jwtService.generateToken(String.valueOf(user.getId()));
+            return new TokenResponseDTO(token);
+        } catch(Exception ex) {
+            throw new AppException("User is exist", "USER_EXIST", HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
+    public void updateSteamId(UserEntity user, ChangeSteamIdDTO changeSteamIdDTO) {
+        user.setSteamId(changeSteamIdDTO.getSteamId());
         userRepository.save(user);
     }
 }

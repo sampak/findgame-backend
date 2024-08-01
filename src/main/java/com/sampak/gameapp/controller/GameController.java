@@ -2,10 +2,12 @@ package com.sampak.gameapp.controller;
 
 import com.sampak.gameapp.dto.requests.FetchSteamGamesDTO;
 import com.sampak.gameapp.dto.requests.GamesResponseDTO;
+import com.sampak.gameapp.dto.responses.ResponseSteamIdDTO;
 import com.sampak.gameapp.entity.GameEntity;
 import com.sampak.gameapp.entity.UserEntity;
 import com.sampak.gameapp.providers.CurrentUserProvider.CurrentUserProvider;
 import com.sampak.gameapp.service.GameService;
+import com.sampak.gameapp.service.SteamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,11 +25,17 @@ public class GameController {
     GameService gameService;
 
     @Autowired
+    SteamService steamService;
+
+    @Autowired
     private CurrentUserProvider currentUserProvider;
 
     @PostMapping("/steam")
-    public List<GamesResponseDTO> fetchUserGamesFromSteam(@RequestBody FetchSteamGamesDTO fetchSteamGamesDTO) {
+    public ResponseSteamIdDTO fetchUserGamesFromSteam(@RequestBody FetchSteamGamesDTO fetchSteamGamesDTO) {
         UserEntity user = currentUserProvider.getCurrentUserEntity();
-        return gameService.fetchUserGamesFromSteam(user, fetchSteamGamesDTO.getSteamName());
+        String steamId = steamService.getSteamId(fetchSteamGamesDTO.getSteamName());
+        gameService.fetchUserGamesFromSteam(user, steamId);
+
+        return new ResponseSteamIdDTO(steamId);
     }
 }

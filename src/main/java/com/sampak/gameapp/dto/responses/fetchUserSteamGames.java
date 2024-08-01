@@ -1,15 +1,13 @@
 package com.sampak.gameapp.dto.responses;
 
+
 import lombok.*;
 
+@Builder
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class UserResponseDTO {
-    String id;
-    String login;
-    String email;
-    String steamId;
+public class fetchUserSteamGames {
+    private String steamId;
 }

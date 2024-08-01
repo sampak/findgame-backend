@@ -1,5 +1,6 @@
 package com.sampak.gameapp.controller;
 
+import com.sampak.gameapp.dto.responses.GetSteamIdDTO;
 import com.sampak.gameapp.entity.GameEntity;
 import com.sampak.gameapp.service.SteamService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,7 @@ public class SteamController {
     }
 
     @GetMapping("/steamid/{url}")
-    public String getSteamId(@PathVariable String url) {
-        return steamService.getSteamId(url);
+    public GetSteamIdDTO getSteamId(@PathVariable String url) {
+        return new GetSteamIdDTO(steamService.getSteamId(url));
     }
 }

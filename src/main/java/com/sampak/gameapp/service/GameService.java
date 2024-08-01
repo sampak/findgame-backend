@@ -30,8 +30,8 @@ public class GameService {
     private UserRepository userRepository;
 
     @Transactional
-    public List<GamesResponseDTO> fetchUserGamesFromSteam(UserEntity user, String steamName) {
-        String steamId = steamService.getSteamId(steamName);
+    public List<GamesResponseDTO> fetchUserGamesFromSteam(UserEntity user, String steamId) {
+
         List<GameEntity> games = steamService.getGames(steamId);
         saveGamesToDatabase(games, user);
         return user.getGames().stream()

@@ -26,6 +26,9 @@ public class UserEntity implements UserDetails {
     @Column(unique = true)
     private String email;
 
+    @Column(nullable = true)
+    private String steamId;
+
     @Column()
     private String login;
 

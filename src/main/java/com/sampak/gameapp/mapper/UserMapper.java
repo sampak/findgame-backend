@@ -8,7 +8,7 @@ public class UserMapper {
 
 
     public static UserResponseDTO mapToUserResponseDTO(UserEntity userEntity) {
-        return UserResponseDTO.builder().id(userEntity.getId().toString()).email(userEntity.getEmail()).login(userEntity.getLogin()).build();
+        return UserResponseDTO.builder().id(userEntity.getId().toString()).email(userEntity.getEmail()).steamId(userEntity.getSteamId()).login(userEntity.getLogin()).build();
     }
 
     public static UserEntity mapToUser(UserCreateRequestDTO user) {
