@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -74,4 +75,11 @@ public class UserController {
                 .map(game -> new GamesResponseDTO(game.getId(), game.getAppId(), game.getName()))
                 .collect(Collectors.toSet());
     }
+
+    @GetMapping("/discovery")
+//    public List<UserResponseDTO> getDiscovery() {
+    public void getDiscovery() {
+//        userService.getAll();
+    }
+
 }

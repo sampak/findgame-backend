@@ -3,6 +3,7 @@ package com.sampak.gameapp.service;
 import com.sampak.gameapp.dto.requests.ChangeSteamIdDTO;
 import com.sampak.gameapp.dto.requests.UserSignInRequestDTO;
 import com.sampak.gameapp.dto.responses.TokenResponseDTO;
+import com.sampak.gameapp.dto.responses.UserResponseDTO;
 import com.sampak.gameapp.entity.UserEntity;
 import com.sampak.gameapp.exception.AppException;
 import com.sampak.gameapp.repository.UserRepository;
@@ -13,6 +14,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +30,11 @@ public class UserService {
 
     @Autowired
     private JwtService jwtService;
+
+    public void getAll() {
+//        return userRepository.findAll();
+
+    }
 
     public TokenResponseDTO login(UserSignInRequestDTO user) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getLogin(), user.getPassword()));
