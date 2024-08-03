@@ -3,10 +3,13 @@ package com.sampak.gameapp.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sampak.gameapp.dto.Test;
+import com.sampak.gameapp.dto.responses.GetSteamProfileDetailsDTO;
 import com.sampak.gameapp.entity.GameEntity;
+import com.sampak.gameapp.exception.AppException;
 import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -25,7 +28,7 @@ public class SteamService {
 
 
 
-    public List<GameEntity> getGames(String steamId) { // TODO Add custom exceptions
+    public List<GameEntity> getGames(String steamId) {
         RestTemplate restTemplate = new RestTemplate();
         String requestUrl = String.format("https://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=%s&steamid=%s&format=json&include_appinfo=true&include_played_free_games=true", key, steamId);
         String jsonResponse = restTemplate.getForObject(requestUrl, String.class);
@@ -47,12 +50,29 @@ public class SteamService {
 
             return gamesList;
         } catch (Exception e) {
-            e.printStackTrace();
-            return gamesList;
+            throw new AppException("Error retriving games", "STEAM_ERROR", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    public String getSteamId(String url) { // TODO Add custom exceptions
+    public GetSteamProfileDetailsDTO getSteamProfileDetails(String steamId) {
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            String requestUrl = String.format("https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=%s&steamids=%s", key, steamId);
+            String jsonResponse = restTemplate.getForObject(requestUrl, String.class);
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode rootNode = objectMapper.readTree(jsonResponse);
+            JsonNode playerNode = rootNode.path("response").path("players").get(0);
+
+            String avatarfull = playerNode.path("avatarfull").asText();
+            String loccountrycode = playerNode.path("loccountrycode").asText();
+
+            return new GetSteamProfileDetailsDTO(avatarfull, loccountrycode);
+        } catch(Exception e) {
+            throw new AppException("Error", "STEAM_ERROR", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public String getSteamId(String url) {
         try {
             RestTemplate restTemplate = new RestTemplate();
             String requestUrl = String.format("https://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=%s&vanityurl=%s", key, url);
@@ -64,7 +84,7 @@ public class SteamService {
             return result.getSteamid();
         } catch (Exception e) {
             e.printStackTrace();
-            return "Error retrieving Steam ID";
+            throw new AppException("Error retriving steamId", "STEAM_ERROR", HttpStatus.BAD_REQUEST);
         }
     }
 }

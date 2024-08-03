@@ -4,6 +4,7 @@ import com.sampak.gameapp.dto.requests.ChangeSteamIdDTO;
 import com.sampak.gameapp.dto.requests.GamesResponseDTO;
 import com.sampak.gameapp.dto.requests.UserCreateRequestDTO;
 import com.sampak.gameapp.dto.requests.UserSignInRequestDTO;
+import com.sampak.gameapp.dto.responses.DiscoveryUserDTO;
 import com.sampak.gameapp.dto.responses.TokenResponseDTO;
 import com.sampak.gameapp.dto.responses.UserResponseDTO;
 import com.sampak.gameapp.entity.GameEntity;
@@ -77,9 +78,9 @@ public class UserController {
     }
 
     @GetMapping("/discovery")
-//    public List<UserResponseDTO> getDiscovery() {
-    public void getDiscovery() {
-//        userService.getAll();
+    public List<DiscoveryUserDTO>  getDiscovery() {
+        UserEntity user = currentUserProvider.getCurrentUserEntity();
+        return userService.getAll(user);
     }
 
 }
