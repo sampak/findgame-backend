@@ -9,7 +9,14 @@ public class UserMapper {
 
 
     public static UserResponseDTO mapToUserResponseDTO(UserEntity userEntity) {
-        return UserResponseDTO.builder().id(userEntity.getId().toString()).email(userEntity.getEmail()).steamId(userEntity.getSteamId()).login(userEntity.getLogin()).build();
+        return UserResponseDTO.builder()
+                .id(userEntity.getId().toString())
+                .email(userEntity.getEmail())
+                .steamId(userEntity.getSteamId())
+                .login(userEntity.getLogin())
+                .avatar(userEntity.getAvatar())
+                .location(userEntity.getLocation())
+                .build();
     }
 
     public static UserEntity mapToUser(UserCreateRequestDTO user) {
@@ -17,6 +24,6 @@ public class UserMapper {
     }
 
     public static DiscoveryUserDTO mapToDiscoveryUserDTO(UserEntity user, double percent) {
-        return DiscoveryUserDTO.builder().id(user.getId()).login(user.getLogin()).score(percent).build();
+        return DiscoveryUserDTO.builder().id(user.getId()).login(user.getLogin()).score(percent).location(user.getLocation()).avatar(user.getAvatar()).build();
     }
 }

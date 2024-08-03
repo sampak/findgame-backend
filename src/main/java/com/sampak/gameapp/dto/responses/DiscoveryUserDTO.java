@@ -12,5 +12,7 @@ import java.util.UUID;
 public class DiscoveryUserDTO {
     private UUID id;
     private String login;
+    private String avatar;
+    private String location;
     private Double score;
 }

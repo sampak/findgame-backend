@@ -12,4 +12,6 @@ public class UserResponseDTO {
     String login;
     String email;
     String steamId;
+    String avatar;
+    String location;
 }
