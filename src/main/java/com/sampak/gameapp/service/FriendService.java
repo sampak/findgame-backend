@@ -3,18 +3,25 @@ package com.sampak.gameapp.service;
 import com.sampak.gameapp.dto.requests.AcceptUserDTO;
 import com.sampak.gameapp.dto.requests.DeclineOrRemoveUserDTO;
 import com.sampak.gameapp.dto.requests.InviteUserDTO;
+import com.sampak.gameapp.dto.responses.FriendDTO;
 import com.sampak.gameapp.entity.FriendEntity;
 import com.sampak.gameapp.entity.FriendStatus;
 import com.sampak.gameapp.entity.UserEntity;
 import com.sampak.gameapp.exception.AppException;
+import com.sampak.gameapp.mapper.FriendMapper;
+import com.sampak.gameapp.mapper.GameMapper;
 import com.sampak.gameapp.repository.FriendRepository;
 import com.sampak.gameapp.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
+
+import static com.sampak.gameapp.mapper.FriendMapper.friendToFriendDTO;
 
 @Service
 public class FriendService {
@@ -24,6 +31,11 @@ public class FriendService {
 
     @Autowired
     private FriendRepository friendRepository;
+
+    public List<FriendDTO> getFriends(UserEntity user) {
+        List<FriendEntity> friends = friendRepository.findByUserOrFriend(user, user);
+        return friends.stream().map(friend -> friendToFriendDTO(friend, friend.getFriend())).collect(Collectors.toList());
+    }
 
     public void invite(UserEntity user, InviteUserDTO inviteUserDTO)  {
         UUID toUserId = UUID.fromString(inviteUserDTO.getId());

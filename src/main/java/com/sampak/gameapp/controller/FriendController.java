@@ -3,11 +3,14 @@ package com.sampak.gameapp.controller;
 import com.sampak.gameapp.dto.requests.AcceptUserDTO;
 import com.sampak.gameapp.dto.requests.DeclineOrRemoveUserDTO;
 import com.sampak.gameapp.dto.requests.InviteUserDTO;
+import com.sampak.gameapp.dto.responses.FriendDTO;
 import com.sampak.gameapp.entity.UserEntity;
 import com.sampak.gameapp.providers.CurrentUserProvider.CurrentUserProvider;
 import com.sampak.gameapp.service.FriendService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/friend")
@@ -18,6 +21,12 @@ public class FriendController {
 
     @Autowired
     private CurrentUserProvider currentUserProvider;
+    
+    @GetMapping("")
+    public List<FriendDTO> getFriends() {
+        UserEntity user = currentUserProvider.getCurrentUserEntity();
+        return friendService.getFriends(user);
+    }
 
 
     @PostMapping("")

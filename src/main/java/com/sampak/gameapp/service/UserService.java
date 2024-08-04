@@ -79,8 +79,15 @@ public class UserService {
     }
 
     public void updateSteamId(UserEntity user, ChangeSteamIdDTO changeSteamIdDTO) {
-        user.setSteamId(changeSteamIdDTO.getSteamId());
-        userRepository.save(user);
+        try {
+            GetSteamProfileDetailsDTO steamProfileDetailsDTO = steamService.getSteamProfileDetails(changeSteamIdDTO.getSteamId());
+            user.setAvatar(steamProfileDetailsDTO.getAvatar());
+            user.setLocation(steamProfileDetailsDTO.getLoccountrycode());
+            user.setSteamId(changeSteamIdDTO.getSteamId());
+            userRepository.save(user);
+        } catch (Exception e) {
+            throw new AppException("Update profile failed", "UPDATED_FAILED", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     public double getCommonGamesPercentage(UUID... userIds) {
