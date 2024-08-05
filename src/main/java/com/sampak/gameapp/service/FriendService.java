@@ -34,7 +34,10 @@ public class FriendService {
 
     public List<FriendDTO> getFriends(UserEntity user) {
         List<FriendEntity> friends = friendRepository.findByUserOrFriend(user, user);
-        return friends.stream().map(friend -> friendToFriendDTO(friend, friend.getFriend())).collect(Collectors.toList());
+        return friends.stream().map(friend -> {
+            boolean myInvitation = friend.getUser().getId().equals(user.getId());
+            return friendToFriendDTO(friend, myInvitation ? friend.getFriend() : friend.getUser(), myInvitation);
+        }).collect(Collectors.toList());
     }
 
     public void invite(UserEntity user, InviteUserDTO inviteUserDTO)  {

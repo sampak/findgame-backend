@@ -7,11 +7,12 @@ import com.sampak.gameapp.entity.UserEntity;
 import static com.sampak.gameapp.mapper.UserMapper.mapToUserResponseDTO;
 
 public class FriendMapper {
-    public static FriendDTO friendToFriendDTO(FriendEntity friendEntity, UserEntity userEntity) {
+    public static FriendDTO friendToFriendDTO(FriendEntity friendEntity, UserEntity userEntity, boolean isMyInvitation) {
         return FriendDTO.builder()
                 .id(friendEntity.getId())
                 .user(mapToUserResponseDTO(userEntity))
                 .status(friendEntity.getStatus())
+                .isMyInvitation(isMyInvitation)
                 .build();
     }
 }

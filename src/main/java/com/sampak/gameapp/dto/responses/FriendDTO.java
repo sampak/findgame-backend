@@ -14,4 +14,5 @@ public class FriendDTO {
     private UUID id;
     private UserResponseDTO user;
     private FriendStatus status;
+    private boolean isMyInvitation;
 }
