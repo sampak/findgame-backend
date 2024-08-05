@@ -48,6 +48,8 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable).authorizeHttpRequests(request -> request
                         .requestMatchers(HttpMethod.POST, "/user").permitAll()
                         .requestMatchers(HttpMethod.POST, "/user/signin").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/steam/verify").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/steam/login").permitAll()
                         .anyRequest().authenticated()
 
         )
