@@ -4,6 +4,7 @@ import com.sampak.gameapp.dto.requests.ChangeSteamIdDTO;
 import com.sampak.gameapp.dto.requests.GamesResponseDTO;
 import com.sampak.gameapp.dto.requests.UserCreateRequestDTO;
 import com.sampak.gameapp.dto.requests.UserSignInRequestDTO;
+import com.sampak.gameapp.dto.responses.DiscoveryUserDTO;
 import com.sampak.gameapp.dto.responses.TokenResponseDTO;
 import com.sampak.gameapp.dto.responses.UserResponseDTO;
 import com.sampak.gameapp.entity.GameEntity;
@@ -17,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -69,17 +71,18 @@ public class UserController {
     }
 
     @GetMapping("/games")
-    public Set<GamesResponseDTO> getGames() {
+    public List<GamesResponseDTO> getGames() {
         UserEntity user = currentUserProvider.getCurrentUserEntity();
         return user.getGames().stream()
+                .sorted(Comparator.comparing(GameEntity::getName))
                 .map(game -> new GamesResponseDTO(game.getId(), game.getAppId(), game.getName()))
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/discovery")
-//    public List<UserResponseDTO> getDiscovery() {
-    public void getDiscovery() {
-//        userService.getAll();
+    public List<DiscoveryUserDTO>  getDiscovery() {
+        UserEntity user = currentUserProvider.getCurrentUserEntity();
+        return userService.getAll(user);
     }
 
 }

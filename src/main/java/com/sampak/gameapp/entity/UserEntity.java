@@ -3,10 +3,13 @@ package com.sampak.gameapp.entity;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Entity
@@ -33,7 +36,24 @@ public class UserEntity implements UserDetails {
     private String login;
 
     @Column()
+    private String avatar;
+
+    @Column()
+    private String location;
+
+    @Column()
     private String password;
+
+    @Column(nullable = true)
+    private LocalDateTime lastProfileUpdate;
+
+    @Column()
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @Column()
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
