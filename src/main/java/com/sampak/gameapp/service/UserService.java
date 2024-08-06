@@ -5,6 +5,7 @@ import com.sampak.gameapp.dto.requests.UserSignInRequestDTO;
 import com.sampak.gameapp.dto.responses.DiscoveryUserDTO;
 import com.sampak.gameapp.dto.responses.GetSteamProfileDetailsDTO;
 import com.sampak.gameapp.dto.responses.TokenResponseDTO;
+import com.sampak.gameapp.dto.responses.UpdateSteamIdDTO;
 import com.sampak.gameapp.entity.GameEntity;
 import com.sampak.gameapp.entity.UserEntity;
 import com.sampak.gameapp.exception.AppException;
@@ -78,13 +79,15 @@ public class UserService {
 
     }
 
-    public void updateSteamId(UserEntity user, ChangeSteamIdDTO changeSteamIdDTO) {
+    public UpdateSteamIdDTO updateSteamId(UserEntity user, ChangeSteamIdDTO changeSteamIdDTO) {
         try {
             GetSteamProfileDetailsDTO steamProfileDetailsDTO = steamService.getSteamProfileDetails(changeSteamIdDTO.getSteamId());
             user.setAvatar(steamProfileDetailsDTO.getAvatar());
             user.setLocation(steamProfileDetailsDTO.getLoccountrycode());
             user.setSteamId(changeSteamIdDTO.getSteamId());
             userRepository.save(user);
+
+            return new UpdateSteamIdDTO(steamProfileDetailsDTO.getAvatar(), steamProfileDetailsDTO.getLoccountrycode());
         } catch (Exception e) {
             throw new AppException("Update profile failed", "UPDATED_FAILED", HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -109,8 +112,12 @@ public class UserService {
 
         // Oblicz procent wspólnych gier
         long totalGames = usersGames.stream().flatMap(Set::stream).distinct().count();
-        double commonGamesPercentage = (double) commonGames.size() / totalGames * 100;
 
+        if(totalGames == 0) {
+            return 0;
+        }
+
+        double commonGamesPercentage = (double) commonGames.size() / totalGames * 100;
         return commonGamesPercentage;
     }
 

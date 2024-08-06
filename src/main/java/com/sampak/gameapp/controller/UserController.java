@@ -1,12 +1,11 @@
 package com.sampak.gameapp.controller;
 
+import com.sampak.gameapp.dto.LoginProvider;
 import com.sampak.gameapp.dto.requests.ChangeSteamIdDTO;
 import com.sampak.gameapp.dto.requests.GamesResponseDTO;
 import com.sampak.gameapp.dto.requests.UserCreateRequestDTO;
 import com.sampak.gameapp.dto.requests.UserSignInRequestDTO;
-import com.sampak.gameapp.dto.responses.DiscoveryUserDTO;
-import com.sampak.gameapp.dto.responses.TokenResponseDTO;
-import com.sampak.gameapp.dto.responses.UserResponseDTO;
+import com.sampak.gameapp.dto.responses.*;
 import com.sampak.gameapp.entity.GameEntity;
 import com.sampak.gameapp.entity.UserEntity;
 import com.sampak.gameapp.providers.CurrentUserProvider.CurrentUserProvider;
@@ -22,6 +21,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 
 import static com.sampak.gameapp.mapper.UserMapper.mapToUser;
 import static com.sampak.gameapp.mapper.UserMapper.mapToUserResponseDTO;
@@ -54,14 +54,21 @@ public class UserController {
 
     @PostMapping("")
     public TokenResponseDTO create(@Valid @RequestBody UserCreateRequestDTO user) {
-        return userService.create(mapToUser(user));
+        UserEntity newUser  = mapToUser(user);
+        newUser.setLoginProvider(LoginProvider.LOGIN);
+        return userService.create(newUser);
+    }
 
+    @GetMapping("/steamid")
+    public ResponseSteamIdDTO getSteamId() {
+        UserEntity user = currentUserProvider.getCurrentUserEntity();
+        return new ResponseSteamIdDTO(user.getSteamId());
     }
 
     @PatchMapping("/steamid")
-    public void updateSteamId(@Valid @RequestBody ChangeSteamIdDTO changeSteamIdDTO) {
+    public UpdateSteamIdDTO updateSteamId(@Valid @RequestBody ChangeSteamIdDTO changeSteamIdDTO) {
         UserEntity user = currentUserProvider.getCurrentUserEntity();
-        userService.updateSteamId(user, changeSteamIdDTO);
+        return userService.updateSteamId(user, changeSteamIdDTO);
     }
 
     @GetMapping("/me")

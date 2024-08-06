@@ -1,6 +1,7 @@
 package com.sampak.gameapp.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.sampak.gameapp.dto.LoginProvider;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -43,6 +44,10 @@ public class UserEntity implements UserDetails {
 
     @Column()
     private String password;
+
+    @Column()
+    @Enumerated(EnumType.STRING)
+    private LoginProvider loginProvider;
 
     @Column(nullable = true)
     private LocalDateTime lastProfileUpdate;

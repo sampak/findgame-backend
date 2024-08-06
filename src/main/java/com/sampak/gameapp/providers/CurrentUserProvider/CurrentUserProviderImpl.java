@@ -39,6 +39,9 @@ public class CurrentUserProviderImpl implements CurrentUserProvider {
     @Override
     public UserEntity getCurrentUserEntity() {
         String id = getCurrentUsername();
+        if(id.equals("anonymousUser")) {
+            return null;
+        }
         return userRepository.getById(UUID.fromString(id));
     }
 }
