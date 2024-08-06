@@ -109,9 +109,9 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.sampak</groupId>
-            <artifactId>steamlib</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <groupId>org.openid4java</groupId>
+            <artifactId>openid4java</artifactId>
+            <version>1.0.0</version>
         </dependency>
     </dependencies>
 

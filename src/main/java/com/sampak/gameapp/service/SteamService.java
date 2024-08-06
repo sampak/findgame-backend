@@ -2,6 +2,7 @@ package com.sampak.gameapp.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sampak.gameapp.SteamAuthenticator;
 import com.sampak.gameapp.dto.LoginProvider;
 import com.sampak.gameapp.dto.Test;
 import com.sampak.gameapp.dto.responses.GetSteamProfileDetailsDTO;
@@ -11,7 +12,6 @@ import com.sampak.gameapp.entity.UserEntity;
 import com.sampak.gameapp.exception.AppException;
 import com.sampak.gameapp.repository.GameRepository;
 import com.sampak.gameapp.repository.UserRepository;
-import com.sampak.steamLib.SteamAuthenticator;
 import lombok.*;
 import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -109,8 +109,14 @@ public class SteamService {
     }
 
     public String getLoginUrl() {
-        SteamAuthenticator steamAuthenticator = new SteamAuthenticator();
-        return steamAuthenticator.authenticate(frontendURL + "/verify");
+        try {
+            SteamAuthenticator steamAuthenticator = new SteamAuthenticator();
+            String link = steamAuthenticator.authenticate(frontendURL + "/verify");
+            return link;
+        } catch(Exception e) {
+            e.printStackTrace();
+            throw new AppException("STEAM_ERROR", "STEAM_ERROR", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     public void getSteamGamesFromVerify(String steamId, UserEntity user) {
@@ -149,11 +155,9 @@ public class SteamService {
             Optional<UserEntity> isExist = userRepository.findBySteamId(steamId);
 
             if (isExist.isPresent()) {
-                System.out.println("user founded");
                 String token = jwtService.generateToken(String.valueOf(isExist.get().getId()));
                 return new TokenResponseDTO(token);
             }
-            System.out.println("user not founded");
 
             UserEntity userEntity = new UserEntity();
             userEntity.setSteamId(steamId);
