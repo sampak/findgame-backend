@@ -59,11 +59,19 @@ public class UserService {
     }
 
     public TokenResponseDTO login(UserSignInRequestDTO user) {
+        try {
+
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getLogin(), user.getPassword()));
-         UserEntity userEntity = userRepository.findByEmailOrLogin(user.getLogin(), user.getLogin()).orElseThrow();
-         String token = jwtService.generateToken(String.valueOf(userEntity.getId()));
+         Optional<UserEntity> userEntity = userRepository.findByEmailOrLogin(user.getLogin(), user.getLogin());
+         if(!userEntity.isPresent()) {
+             throw new AppException("NOT_FOUND", "NOT_FOUND", HttpStatus.NOT_FOUND);
+         }
+         String token = jwtService.generateToken(String.valueOf(userEntity.get().getId()));
 
          return new TokenResponseDTO(token);
+        } catch (Exception e) {
+            throw new AppException("NOT_FOUND", "NOT_FOUND", HttpStatus.NOT_FOUND);
+        }
 
     }
 
