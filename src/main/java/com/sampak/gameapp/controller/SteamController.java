@@ -1,6 +1,8 @@
 package com.sampak.gameapp.controller;
 
+import com.sampak.gameapp.dto.requests.RequestVerifyDTO;
 import com.sampak.gameapp.dto.responses.GetSteamIdDTO;
+import com.sampak.gameapp.dto.responses.TokenResponseDTO;
 import com.sampak.gameapp.entity.GameEntity;
 import com.sampak.gameapp.entity.UserEntity;
 import com.sampak.gameapp.providers.CurrentUserProvider.CurrentUserProvider;
@@ -28,10 +30,11 @@ public class SteamController {
         return steamService.getLoginUrl();
     }
 
-    @GetMapping("/verify")
-    public void verify(HttpServletRequest request,  @RequestParam Map<String, String> queryParams) {
+    @PostMapping("/verify")
+    public TokenResponseDTO verify(@RequestBody RequestVerifyDTO requestVerifyDTO) {
         UserEntity user = currentUserProvider.getCurrentUserEntity();
-        steamService.verify(user, request.getRequestURL().toString(), queryParams);
+//        steamService.verify(user, request.getRequestURL().toString(), queryParams);
+        return steamService.verify(user, requestVerifyDTO.getRequestURL(), requestVerifyDTO.getQueryParams());
     }
 
     @GetMapping("games/{steamId}")

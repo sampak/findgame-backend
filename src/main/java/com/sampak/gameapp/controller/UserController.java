@@ -5,10 +5,7 @@ import com.sampak.gameapp.dto.requests.ChangeSteamIdDTO;
 import com.sampak.gameapp.dto.requests.GamesResponseDTO;
 import com.sampak.gameapp.dto.requests.UserCreateRequestDTO;
 import com.sampak.gameapp.dto.requests.UserSignInRequestDTO;
-import com.sampak.gameapp.dto.responses.DiscoveryUserDTO;
-import com.sampak.gameapp.dto.responses.TokenResponseDTO;
-import com.sampak.gameapp.dto.responses.UpdateSteamIdDTO;
-import com.sampak.gameapp.dto.responses.UserResponseDTO;
+import com.sampak.gameapp.dto.responses.*;
 import com.sampak.gameapp.entity.GameEntity;
 import com.sampak.gameapp.entity.UserEntity;
 import com.sampak.gameapp.providers.CurrentUserProvider.CurrentUserProvider;
@@ -60,6 +57,12 @@ public class UserController {
         UserEntity newUser  = mapToUser(user);
         newUser.setLoginProvider(LoginProvider.LOGIN);
         return userService.create(newUser);
+    }
+
+    @GetMapping("/steamid")
+    public ResponseSteamIdDTO getSteamId() {
+        UserEntity user = currentUserProvider.getCurrentUserEntity();
+        return new ResponseSteamIdDTO(user.getSteamId());
     }
 
     @PatchMapping("/steamid")
