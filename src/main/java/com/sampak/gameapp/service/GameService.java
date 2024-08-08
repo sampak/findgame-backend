@@ -33,7 +33,9 @@ public class GameService {
     public List<GamesResponseDTO> fetchUserGamesFromSteam(UserEntity user, String steamId) {
 
         List<GameEntity> games = steamService.getGames(steamId);
+        System.out.println(games);
         saveGamesToDatabase(games, user);
+        user = userRepository.findById(user.getId()).orElseThrow(() -> new RuntimeException("User not found"));
         return user.getGames().stream()
                 .map(GameMapper::gameToGamesResponseDTO)
                 .collect(Collectors.toList());
@@ -62,6 +64,7 @@ public class GameService {
     }
 
     @Scheduled(cron = "0 0 23 * * ?")
+    @Transactional
     public void performGamesUpdate() {
         List<UserEntity> users = userRepository.findAll();
         for (UserEntity user : users) {

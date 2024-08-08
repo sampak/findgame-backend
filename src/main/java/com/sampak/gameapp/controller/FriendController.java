@@ -2,7 +2,6 @@ package com.sampak.gameapp.controller;
 
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.listener.DataListener;
-import com.sampak.gameapp.dto.SocketMessage;
 import com.sampak.gameapp.dto.requests.AcceptUserDTO;
 import com.sampak.gameapp.dto.requests.DeclineOrRemoveUserDTO;
 import com.sampak.gameapp.dto.requests.InviteUserDTO;
