@@ -42,7 +42,7 @@ public class FriendServiceImpl implements FriendService {
         }).collect(Collectors.toList());
     }
 
-    public UUID invite(UserEntity user, InviteUserDTO inviteUserDTO)  {
+    public FriendDTO invite(UserEntity user, InviteUserDTO inviteUserDTO)  {
         UUID toUserId = UUID.fromString(inviteUserDTO.getId());
         Optional<UserEntity> toUser = userRepository.findById(toUserId);
 
@@ -59,7 +59,7 @@ public class FriendServiceImpl implements FriendService {
 
         FriendEntity friend = FriendEntity.builder().user(user).friend(toUser.get()).status(FriendStatus.INVITED).build();
         friendRepository.save(friend);
-        return friend.getId();
+        return friendToFriendDTO(friend, toUser.get(), true);
     }
 
     public FriendEntity acceptInvite(UserEntity user, AcceptUserDTO inviteUserDTO)  {

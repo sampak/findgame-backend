@@ -12,7 +12,7 @@ import java.util.UUID;
 
 public interface FriendService {
     List<FriendDTO> getFriends(UserEntity user);
-    UUID invite(UserEntity user, InviteUserDTO inviteUserDTO);
+    FriendDTO invite(UserEntity user, InviteUserDTO inviteUserDTO);
     FriendEntity acceptInvite(UserEntity user, AcceptUserDTO inviteUserDTO);
     UUID declineOrRemove(UserEntity user, DeclineOrRemoveUserDTO inviteUserDTO);
 }

@@ -1,8 +1,6 @@
 package com.sampak.gameapp.controller;
 
-import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
-import com.corundumstudio.socketio.listener.DataListener;
 import com.sampak.gameapp.dto.FriendRemove;
 import com.sampak.gameapp.dto.FriendSocket;
 import com.sampak.gameapp.dto.FriendStatusChange;
@@ -16,12 +14,10 @@ import com.sampak.gameapp.entity.UserEntity;
 import com.sampak.gameapp.providers.CurrentUserProvider.CurrentUserProvider;
 import com.sampak.gameapp.service.FriendService;
 import com.sampak.gameapp.service.SocketService;
-import com.sampak.gameapp.service.impl.FriendServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import static com.sampak.gameapp.mapper.UserMapper.mapToUserResponseDTO;
@@ -61,11 +57,16 @@ public class FriendController {
 
 
     @PostMapping("")
-    public void invite(@RequestBody InviteUserDTO inviteUserDTO)  {
+    public FriendDTO invite(@RequestBody InviteUserDTO inviteUserDTO)  {
         UserEntity user = currentUserProvider.getCurrentUserEntity();
-        UUID invitationId = friendService.invite(user, inviteUserDTO);
-        FriendDTO friendDTO = new FriendDTO(invitationId, mapToUserResponseDTO(user), FriendStatus.INVITED, false);
-        socketService.sendMessage(UUID.fromString(inviteUserDTO.getId()), FriendSocket.FRIEND_INVITATION.toString(), friendDTO);
+        FriendDTO friendEntity = friendService.invite(user, inviteUserDTO);
+        FriendDTO toFriend = new FriendDTO();
+        toFriend.setId(friendEntity.getId());
+        toFriend.setStatus(friendEntity.getStatus());
+        toFriend.setUser(mapToUserResponseDTO(user));
+        toFriend.setMyInvitation(false);
+        socketService.sendMessage(UUID.fromString(inviteUserDTO.getId()), FriendSocket.FRIEND_INVITATION.toString(), toFriend);
+        return friendEntity;
     }
 
     @PutMapping("/accept")

@@ -1,9 +1,14 @@
 package com.sampak.gameapp.module;
 
+import java.net.Socket;
+import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
+import com.sampak.gameapp.dto.FriendSocket;
 import com.sampak.gameapp.entity.UserEntity;
 import com.sampak.gameapp.service.JwtService;
+import com.sampak.gameapp.service.SocketService;
 import com.sampak.gameapp.service.impl.JwtServiceImpl;
 import com.sampak.gameapp.service.impl.UserEntityServiceDetailsImpl;
 import org.springframework.stereotype.Component;
@@ -21,11 +26,13 @@ public class SocketModule {
     private final SocketIOServer server;
     private JwtService jwtService;
     private UserEntityServiceDetailsImpl userDetailsService;
+    private SocketService socketService;
 
-    public SocketModule(SocketIOServer server, JwtService jwtService, UserEntityServiceDetailsImpl userDetailsService) {
+    public SocketModule(SocketIOServer server, JwtService jwtService, UserEntityServiceDetailsImpl userDetailsService, SocketService socketService) {
         this.server = server;
         this.jwtService = jwtService;
         this.userDetailsService = userDetailsService;
+        this.socketService = socketService;
         server.addConnectListener(this.onConnected());
         server.addDisconnectListener(this.onDisconnected());
     }
@@ -37,9 +44,16 @@ public class SocketModule {
             String userId = jwtService.extractUsername(token);
             UserEntity userDetails = userDetailsService.loadUserById(userId);
             if(userId != null && jwtService.validateToken(token, userDetails)) {
+                if(client.get("userId") != null) { // If user is connected to socket then don't try to send events
+                    if( client.get("userId").equals(userId)) {
+                        return;
+                    }
+                }
                 client.set("userId", userId);
+                List<UUID> friends = socketService.getOnlineFriends(UUID.fromString(userId));
+                client.sendEvent(FriendSocket.FRIEND_ONLINE_LIST.toString(), friends);
+                socketService.notifyFriendsOnlineStatusChange(UUID.fromString(userId), true);
                 log.info("Socket ID[{}] - username [{}]  Connected to chat module through", client.getSessionId().toString(), userId);
-                client.sendEvent("read_message", "connected");
             } else {
                 client.disconnect();
             }
@@ -49,8 +63,16 @@ public class SocketModule {
     private DisconnectListener onDisconnected() {
         return client -> {
             var params = client.getHandshakeData().getUrlParams();
+            String userId = client.get("userId");
+
+            if (userId != null) {
+                socketService.notifyFriendsOnlineStatusChange(UUID.fromString(userId), false);
+            }
+
             log.info("Socket ID[{}] - username [{}]  discnnected to chat module through", client.getSessionId().toString(), client.get("userId"));
         };
     }
+
+
 
 }
