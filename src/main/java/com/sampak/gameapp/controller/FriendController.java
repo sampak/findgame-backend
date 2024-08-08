@@ -80,10 +80,6 @@ public class FriendController {
     public void delete(@RequestBody DeclineOrRemoveUserDTO declineOrRemoveUserDTO) {
         UserEntity  user = currentUserProvider.getCurrentUserEntity();
         UUID friendId = friendService.declineOrRemove(user, declineOrRemoveUserDTO);
-        socketService.sendMessage(friendId, FriendSocket.FRIEND_REMOVE.toString(), new FriendRemove(id));
+        socketService.sendMessage(friendId, FriendSocket.FRIEND_REMOVE.toString(), new FriendRemove(UUID.fromString(declineOrRemoveUserDTO.getInviteId())));
     }
-
-
-
-
 }
