@@ -42,7 +42,7 @@ public class FriendServiceImpl implements FriendService {
         }).collect(Collectors.toList());
     }
 
-    public void invite(UserEntity user, InviteUserDTO inviteUserDTO)  {
+    public UUID invite(UserEntity user, InviteUserDTO inviteUserDTO)  {
         UUID toUserId = UUID.fromString(inviteUserDTO.getId());
         Optional<UserEntity> toUser = userRepository.findById(toUserId);
 
@@ -59,9 +59,10 @@ public class FriendServiceImpl implements FriendService {
 
         FriendEntity friend = FriendEntity.builder().user(user).friend(toUser.get()).status(FriendStatus.INVITED).build();
         friendRepository.save(friend);
+        return friend.getId();
     }
 
-    public void acceptInvite(UserEntity user, AcceptUserDTO inviteUserDTO)  {
+    public FriendEntity acceptInvite(UserEntity user, AcceptUserDTO inviteUserDTO)  {
         UUID invitationId = UUID.fromString(inviteUserDTO.getInviteId());
 
         Optional<FriendEntity> invitation = friendRepository.findById(invitationId);
@@ -85,9 +86,10 @@ public class FriendServiceImpl implements FriendService {
 
         invitationFriend.setStatus(FriendStatus.FRIENDS);
         friendRepository.save(invitationFriend);
+        return invitationFriend;
     }
 
-    public void declineOrRemove(UserEntity user, DeclineOrRemoveUserDTO inviteUserDTO)  {
+    public UUID declineOrRemove(UserEntity user, DeclineOrRemoveUserDTO inviteUserDTO)  {
         UUID invitationId = UUID.fromString(inviteUserDTO.getInviteId());
 
         Optional<FriendEntity> friendRelation = friendRepository.findById(invitationId);
@@ -104,5 +106,7 @@ public class FriendServiceImpl implements FriendService {
         }
 
         friendRepository.delete(friend);
+
+        return friend.getFriend().getId();
     }
 }
