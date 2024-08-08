@@ -1,5 +1,8 @@
 package com.sampak.gameapp.controller;
 
+import com.corundumstudio.socketio.SocketIOServer;
+import com.corundumstudio.socketio.listener.DataListener;
+import com.sampak.gameapp.dto.SocketMessage;
 import com.sampak.gameapp.dto.requests.AcceptUserDTO;
 import com.sampak.gameapp.dto.requests.DeclineOrRemoveUserDTO;
 import com.sampak.gameapp.dto.requests.InviteUserDTO;
@@ -11,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/friend")
@@ -21,7 +25,21 @@ public class FriendController {
 
     @Autowired
     private CurrentUserProvider currentUserProvider;
-    
+
+    private SocketIOServer server;
+
+    private DataListener<String> test() {
+        return (senderClient, data, ackSender) -> {
+            System.out.println(Optional.ofNullable(senderClient.get("userId")));
+            System.out.println(data);
+        };
+    }
+
+    FriendController(SocketIOServer server) {
+        this.server = server;
+        server.addEventListener("send_message", String.class, this.test());
+    }
+
     @GetMapping("")
     public List<FriendDTO> getFriends() {
         UserEntity user = currentUserProvider.getCurrentUserEntity();
@@ -46,5 +64,8 @@ public class FriendController {
         UserEntity  user = currentUserProvider.getCurrentUserEntity();
         friendService.declineOrRemove(user, declineOrRemoveUserDTO);
     }
+
+
+
 
 }
