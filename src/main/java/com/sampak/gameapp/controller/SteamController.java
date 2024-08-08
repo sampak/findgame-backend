@@ -7,12 +7,11 @@ import com.sampak.gameapp.entity.GameEntity;
 import com.sampak.gameapp.entity.UserEntity;
 import com.sampak.gameapp.providers.CurrentUserProvider.CurrentUserProvider;
 import com.sampak.gameapp.service.SteamService;
-import jakarta.servlet.http.HttpServletRequest;
+import com.sampak.gameapp.service.impl.SteamServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 
 @RestController

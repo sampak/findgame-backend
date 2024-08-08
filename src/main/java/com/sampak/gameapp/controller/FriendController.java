@@ -9,6 +9,7 @@ import com.sampak.gameapp.dto.responses.FriendDTO;
 import com.sampak.gameapp.entity.UserEntity;
 import com.sampak.gameapp.providers.CurrentUserProvider.CurrentUserProvider;
 import com.sampak.gameapp.service.FriendService;
+import com.sampak.gameapp.service.impl.FriendServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

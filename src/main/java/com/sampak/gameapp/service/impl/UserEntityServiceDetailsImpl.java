@@ -1,20 +1,18 @@
-package com.sampak.gameapp.service;
+package com.sampak.gameapp.service.impl;
 
 
 import com.sampak.gameapp.entity.UserEntity;
 import com.sampak.gameapp.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class UserEntityServiceDetails implements UserDetailsService {
+public class UserEntityServiceDetailsImpl implements UserDetailsService {
 
     private final UserRepository userRepository;
 

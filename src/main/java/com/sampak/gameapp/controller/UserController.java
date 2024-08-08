@@ -11,7 +11,8 @@ import com.sampak.gameapp.entity.UserEntity;
 import com.sampak.gameapp.providers.CurrentUserProvider.CurrentUserProvider;
 import com.sampak.gameapp.service.SteamService;
 import com.sampak.gameapp.service.UserService;
-import jakarta.transaction.Transactional;
+import com.sampak.gameapp.service.impl.SteamServiceImpl;
+import com.sampak.gameapp.service.impl.UserServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 

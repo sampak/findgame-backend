@@ -4,7 +4,8 @@ import java.util.stream.Collectors;
 
 import com.sampak.gameapp.entity.UserEntity;
 import com.sampak.gameapp.service.JwtService;
-import com.sampak.gameapp.service.UserEntityServiceDetails;
+import com.sampak.gameapp.service.impl.JwtServiceImpl;
+import com.sampak.gameapp.service.impl.UserEntityServiceDetailsImpl;
 import org.springframework.stereotype.Component;
 
 import com.corundumstudio.socketio.SocketIOServer;
@@ -19,16 +20,16 @@ public class SocketModule {
 
     private final SocketIOServer server;
     private JwtService jwtService;
-    private UserEntityServiceDetails userDetailsService;
+    private UserEntityServiceDetailsImpl userDetailsService;
 
-    public SocketModule(SocketIOServer server, JwtService jwtService, UserEntityServiceDetails userDetailsService) {
+    public SocketModule(SocketIOServer server, JwtService jwtService, UserEntityServiceDetailsImpl userDetailsService) {
         this.server = server;
         this.jwtService = jwtService;
         this.userDetailsService = userDetailsService;
         server.addConnectListener(this.onConnected());
         server.addDisconnectListener(this.onDisconnected());
     }
-    
+
     private ConnectListener onConnected() {
         return (client) -> {
             var params = client.getHandshakeData().getUrlParams();
