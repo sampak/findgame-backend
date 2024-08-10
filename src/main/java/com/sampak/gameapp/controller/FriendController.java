@@ -1,6 +1,8 @@
 package com.sampak.gameapp.controller;
 
+import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
+import com.corundumstudio.socketio.listener.DataListener;
 import com.sampak.gameapp.dto.FriendRemove;
 import com.sampak.gameapp.dto.FriendSocket;
 import com.sampak.gameapp.dto.FriendStatusChange;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static com.sampak.gameapp.mapper.UserMapper.mapToUserResponseDTO;
 
@@ -42,11 +45,24 @@ public class FriendController {
 //            System.out.println(data);
 //        };
 //    }
+//List<UUID> friends = socketService.getOnlineFriends(UUID.fromString(userId));
+//                client.sendEvent(FriendSocket.FRIEND_ONLINE_LIST.toString(), friends);
+
+    private DataListener<Void> getOnlineFriends() {
+        return (client, data, ackSender) -> {
+            List<UUID> onlineFriends = socketService.getOnlineFriends(UUID.fromString(client.get("userId")));
+            List<String> onlineFriendsAsString = onlineFriends.stream()
+                    .map(UUID::toString)
+                    .collect(Collectors.toList());
+            client.sendEvent(FriendSocket.FRIEND_ONLINE_LIST.toString(), onlineFriendsAsString);
+            System.out.println("onlineFriends: " + onlineFriendsAsString);
+        };
+    }
 
     FriendController(SocketIOServer server, SocketService socketService) {
         this.server = server;
         this.socketService = socketService;
-//        server.addEventListener("send_message", String.class, this.test());
+        server.addEventListener(FriendSocket.FRIEND_ONLINE_LIST.toString(), void.class, this.getOnlineFriends());
     }
 
     @GetMapping("")

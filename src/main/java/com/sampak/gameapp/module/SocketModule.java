@@ -50,8 +50,6 @@ public class SocketModule {
                     }
                 }
                 client.set("userId", userId);
-                List<UUID> friends = socketService.getOnlineFriends(UUID.fromString(userId));
-                client.sendEvent(FriendSocket.FRIEND_ONLINE_LIST.toString(), friends);
                 socketService.notifyFriendsOnlineStatusChange(UUID.fromString(userId), true);
                 log.info("Socket ID[{}] - username [{}]  Connected to chat module through", client.getSessionId().toString(), userId);
             } else {
