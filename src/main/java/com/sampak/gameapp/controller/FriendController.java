@@ -39,15 +39,6 @@ public class FriendController {
 
     private SocketService socketService;
 
-//    private DataListener<String> test() {
-//        return (senderClient, data, ackSender) -> {
-//            System.out.println(Optional.ofNullable(senderClient.get("userId")));
-//            System.out.println(data);
-//        };
-//    }
-//List<UUID> friends = socketService.getOnlineFriends(UUID.fromString(userId));
-//                client.sendEvent(FriendSocket.FRIEND_ONLINE_LIST.toString(), friends);
-
     private DataListener<Void> getOnlineFriends() {
         return (client, data, ackSender) -> {
             List<UUID> onlineFriends = socketService.getOnlineFriends(UUID.fromString(client.get("userId")));

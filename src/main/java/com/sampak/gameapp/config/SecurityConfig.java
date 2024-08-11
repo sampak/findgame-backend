@@ -50,6 +50,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/user/signin").permitAll()
                         .requestMatchers(HttpMethod.POST, "/steam/verify").permitAll()
                         .requestMatchers(HttpMethod.GET, "/steam/login").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/socket.io/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/socket.io/*").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/socket.io").permitAll()
                         .anyRequest().authenticated()
 
         )
