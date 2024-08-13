@@ -3,11 +3,13 @@ package com.sampak.gameapp.controller;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.listener.DataListener;
 import com.sampak.gameapp.dto.RoomGameUpdateDTO;
+import com.sampak.gameapp.dto.WheelGame;
 import com.sampak.gameapp.dto.WheelRoom;
 import com.sampak.gameapp.dto.WheelSocket;
 import com.sampak.gameapp.dto.requests.GamesResponseDTO;
 import com.sampak.gameapp.dto.requests.RequestWheelDTO;
 import com.sampak.gameapp.dto.responses.UserResponseDTO;
+import com.sampak.gameapp.entity.GameEntity;
 import com.sampak.gameapp.entity.UserEntity;
 import com.sampak.gameapp.providers.CurrentUserProvider.CurrentUserProvider;
 import com.sampak.gameapp.repository.UserRepository;
@@ -39,6 +41,46 @@ public class WheelController {
         server.addEventListener(WheelSocket.ROOM_JOIN.toString(), String.class, this.joinToSpectators());
         server.addEventListener(WheelSocket.ROOM_LEAVE.toString(), String.class, this.leaveFromSpectators());
         server.addEventListener(WheelSocket.ROOM_INSERT_GAMES.toString(), RoomGameUpdateDTO.class, this.insertGames());
+        server.addEventListener(WheelSocket.ROOM_REMOVE_GAMES.toString(), RoomGameUpdateDTO.class, this.removeGames());
+        server.addEventListener(WheelSocket.ROOM_ROLL.toString(), String.class, this.rollGame());
+    }
+
+    private DataListener<String> rollGame() {
+        return (client, data, ackSender) -> {
+            String roomId = data;
+            List<WheelGame> games = wheelService.roll(roomId);
+
+            if(games == null) {
+                return;
+            }
+
+            WheelRoom room = wheelService.getRoom(roomId);
+
+            for (UserResponseDTO user : room.getSpectators()) {
+                socketService.sendMessage(UUID.fromString(user.getId()), WheelSocket.ROOM_ROLL.toString(), games);
+            }
+
+        };
+    }
+
+    private DataListener<RoomGameUpdateDTO> removeGames() {
+        return (client, data, ackSender) -> {
+            UUID userId = UUID.fromString(client.get("userId"));
+            String roomId = data.getRoomId();
+            List<String> gameIds = data.getGames();
+
+            Optional<UserEntity> userEntity = userRepository.findById(userId);
+            if(!userEntity.isPresent()) {
+                return;
+            }
+
+            wheelService.removeGamesFromRoom(roomId, gameIds);
+            WheelRoom room = wheelService.getRoom(roomId);
+
+            for (UserResponseDTO user : room.getSpectators()) {
+                socketService.sendMessage(UUID.fromString(user.getId()), WheelSocket.ROOM_UPDATE.toString(), room);
+            }
+        };
     }
 
     private DataListener<RoomGameUpdateDTO> insertGames() {
@@ -65,8 +107,8 @@ public class WheelController {
 
     private DataListener<String> joinToSpectators() {
         return (client, data, ackSender) -> {
-            System.out.println("Received data: " + data);
             UUID userId = UUID.fromString(client.get("userId"));
+            System.out.println("Wrzucam gracza: " + data + userId);
             String roomId = data.toString();
 
             Optional<UserEntity> userEntity = userRepository.findById(userId);

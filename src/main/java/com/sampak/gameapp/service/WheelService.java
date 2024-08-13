@@ -1,5 +1,6 @@
 package com.sampak.gameapp.service;
 
+import com.sampak.gameapp.dto.WheelGame;
 import com.sampak.gameapp.dto.WheelRoom;
 import com.sampak.gameapp.dto.requests.GamesResponseDTO;
 import com.sampak.gameapp.dto.requests.RequestWheelDTO;
@@ -16,4 +17,5 @@ public interface WheelService {
     List<GamesResponseDTO> getSharedGames(String roomId);
     void insertGamesToRoom(String roomId, List<String> gameIds);
     void removeGamesFromRoom(String roomId, List<String> gameIds);
+    List<WheelGame> roll(String roomId);
 }

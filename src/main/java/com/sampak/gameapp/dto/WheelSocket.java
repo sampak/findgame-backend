@@ -8,7 +8,8 @@ public enum WheelSocket {
     ROOM_LEAVE,
     ROOM_UPDATE,
     ROOM_INSERT_GAMES,
-    ROOM_REMOVE_GAMES;
+    ROOM_REMOVE_GAMES,
+    ROOM_ROLL;
 
     @JsonValue
     public String toValue() {
